@@ -1,7 +1,7 @@
 /*
-* This file details the arduino code to turn the arduino uno into a slave and setup an interupt. 
-* The code to set up the RPi will be in a separate file
-* This has been sourced from https://roboticsbackend.com/raspberry-pi-master-arduino-uno-slave-spi-communication-with-wiringpi/
+  This file details the arduino code to turn the arduino uno into a slave and setup an interupt. 
+  The code to set up the RPi will be in a separate file
+  This has been sourced from https://roboticsbackend.com/raspberry-pi-master-arduino-uno-slave-spi-communication-with-wiringpi/
 */ 
 
 
