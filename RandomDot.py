@@ -2,6 +2,7 @@
 from psychopy import visual, core
 import random
 import spidev
+import numpy
 
 # Open SPI bus
 spi = spidev.SpiDev()
@@ -21,6 +22,17 @@ def ConvertVolts(data,places):
   volts = (data * 3.3) / float(1023)
   volts = round(volts,places)
   return volts
+
+# analog channel
+light_channel = 0
+
+# Read the light sensor data
+light_level = read_channel(light_channel)
+light_volts = ConvertVolts(light_level,2)
+
+# create an array
+cordinates = numpy.array([])
+sampling_value = numpy.array([])
 
 #create a window
 mywin = visual.Window([800,600], monitor="testMonitor", units="deg")
@@ -46,7 +58,8 @@ for i in range (30):
         if (x,y) in excluded: continue
         cords.append((x,y))
         i += 1
-    print(cords, file=open("cords.txt", "a"))
+    new_cords = numpy.append(cordinates, cords)
+    #print(new_cords)
 
     for i in range (4):
         # create some stimuli
@@ -56,8 +69,11 @@ for i in range (30):
         for frameN in range(frame_rate * seconds_stim):
             if (frameN % (frame * 2)) >= frame:
                 fixation.draw()
-                #print(read_channel(channel), file=open("cords.txt", "a"))
+                new_sampling_values = numpy.append(sampling_value, light_volts)
             else:
                 inverse_fixation.draw()
-                #print(read_channel(channel), file=open("cords.txt", "a"))
+                new_sampling_values = numpy.append(sampling_value, light_volts)
             mywin.flip()
+            
+print(new_cords, file=open("cords.txt")
+print(new_sampling_values, file=open("sampling.txt")
