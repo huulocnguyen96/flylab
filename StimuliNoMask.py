@@ -1,6 +1,10 @@
 # importing necessary libraries
 from psychopy import visual, core
 import spidev
+import numpy
+
+# create an array
+sampling_value = numpy.array([])
 
 # Open SPI bus
 spi = spidev.SpiDev()
@@ -57,10 +61,10 @@ for frameN in range(frame_rate*seconds_buf):
 for frameN in range(frame_rate*seconds_stim):
     if (frameN % (frame*2)) >= frame:
         grating.draw()
-        print(read_channel(channel), file=open("output.txt", "a"))
+        new_sampling_values = numpy.append(sampling_value, light_volts)
     else:
         inverse_grating.draw()
-        print(read_channel(channel), file=open("output.txt", "a"))
+        new_sampling_values = numpy.append(sampling_value, light_volts)
     mywin.flip()
 
 
@@ -72,3 +76,5 @@ for frameN in range(frame_rate*seconds_buf):
 # close window
 mywin.close()
 core.quit()
+
+print(new_sampling_values, file=open("sampling.txt"))
