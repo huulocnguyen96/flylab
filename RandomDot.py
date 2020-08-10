@@ -74,6 +74,10 @@ for i in range (30):
                 inverse_fixation.draw()
                 new_sampling_values = numpy.append(sampling_value, light_volts)
             mywin.flip()
+
+# close window
+mywin.close()
+core.quit()
             
 print(new_cords, file=open("cords.txt"))
 print(new_sampling_values, file=open("sampling.txt"))
