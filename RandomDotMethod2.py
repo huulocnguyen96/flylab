@@ -64,5 +64,9 @@ for i in range (30):
                 new_sampling_values = numpy.append(sampling_value, str(chan.voltage))
             mywin.flip()
 
+# close window
+mywin.close()
+core.quit()
+            
 print(new_cords, file=open("cords.txt"))
 print(new_sampling_values, file=open("sampling.txt"))
