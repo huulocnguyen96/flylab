@@ -75,5 +75,5 @@ for i in range (30):
                 new_sampling_values = numpy.append(sampling_value, light_volts)
             mywin.flip()
             
-print(new_cords, file=open("cords.txt")
-print(new_sampling_values, file=open("sampling.txt")
+print(new_cords, file=open("cords.txt"))
+print(new_sampling_values, file=open("sampling.txt"))
