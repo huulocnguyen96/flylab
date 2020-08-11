@@ -7,7 +7,7 @@ import numpy
 # Open SPI bus
 spi = spidev.SpiDev()
 spi.open(0,0)
-spi.max_speed_hz=1000000
+spi.max_speed_hz=15600000
 
 # Function to read SPI data from MCP3008 chip
 # Channel must be an integer 0-7
@@ -18,17 +18,17 @@ def read_channel(channel):
 
 # Function to convert data to voltage level,
 # rounded to specified number of decimal places.
-def ConvertVolts(data,places):
-  volts = (data * 3.3) / float(1023)
-  volts = round(volts,places)
-  return volts
+#def ConvertVolts(data,places):
+  #volts = (data * 3.3) / float(1023)
+  #volts = round(volts,places)
+  #return volts
 
 # analog channel
 light_channel = 0
 
 # Read the light sensor data
-light_level = read_channel(light_channel)
-light_volts = ConvertVolts(light_level,2)
+#light_level = read_channel(light_channel)
+#light_volts = ConvertVolts(light_level,2)
 
 # create an array
 cordinates = numpy.array([])
@@ -69,10 +69,10 @@ for i in range (30):
         for frameN in range(frame_rate * seconds_stim):
             if (frameN % (frame * 2)) >= frame:
                 fixation.draw()
-                new_sampling_values = numpy.append(sampling_value, light_volts)
+                new_sampling_values = numpy.append(sampling_value, read_channel(light_channel))
             else:
                 inverse_fixation.draw()
-                new_sampling_values = numpy.append(sampling_value, light_volts)
+                new_sampling_values = numpy.append(sampling_value, read_channel(light_channel))
             mywin.flip()
 
 # close window
