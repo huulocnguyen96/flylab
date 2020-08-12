@@ -32,7 +32,7 @@ def read_channel(channel):
 
 # create an array
 qty = 30 #max dots
-cordinates = numpy.zeros((2, qty), dtype = int)
+cordinates = numpy.zeros((qty, 2), dtype = int)
 
 #create a window
 mywin = visual.Window([800,600], monitor="testMonitor", units="deg")
@@ -46,7 +46,7 @@ i = 0
 while i<qty:
     x = random.randrange(*rangeX)
     y = random.randrange(*rangeY)
-    cordinates[:,i] = [x,y]
+    cordinates[i, :] = [x,y]
     i += 1
 numpy.savetxt('myCoordinates.csv', cordinates, delimiter=',', newline='\n')
 
@@ -54,24 +54,24 @@ numpy.savetxt('myCoordinates.csv', cordinates, delimiter=',', newline='\n')
 frame_rate = mywin.getActualFrameRate()
 frame_rpts = 15
 stim_per_rpt = 4 
-sampling_values = numpy.zeros((qty, frame_rpts * stim_per_rpt * 2), dtype = int)
+sampling_values = numpy.zeros((frame_rpts * stim_per_rpt * 2, qty), dtype = int)
 
 for i in range (qty): # show all dots one after another
     frame_count = 0
-    fixation = visual.GratingStim(win=mywin, mask="circle", size=2, pos= cordinates[:,i], sf=0, rgb=-1)
-    inverse_fixation = visual.GratingStim(win=mywin, mask="circle", size=2, pos= cordinates[:,i], sf=0, rgb=0)
+    fixation = visual.GratingStim(win=mywin, mask="circle", size=2, pos= cordinates[i,:], sf=0, color=[-1,-1,-1], colorSpace='rgb')
+    inverse_fixation = visual.GratingStim(win=mywin, mask="circle", size=2, pos= cordinates[i,:], sf=0, color=[1,1,1], colorSpace='rgb')
     
     for j in range (frame_rpts): # 15 times should give us 2 sec of flicker  
         # this next bit should take 1/60 * 8 sec, ie 7.5 Hz
         for k in range (stim_per_rpt): # show each pattern for 4 frames; sample every frame
             # create some stimuli
             fixation.draw()
-            sampling_values [i, frame_count] = read_channel() 
+            sampling_values [frame_count, i] = read_channel() 
             frame_count = frame_count + 1
             mywin.flip()
         for k in range (stim_per_rpt): # now show the opposite frame
             inverse_fixation.draw()
-            sampling_values [i, frame_count] = read_channel() 
+            sampling_values [frame_count, i] = read_channel() 
             frame_count = frame_count + 1
             mywin.flip()
 
