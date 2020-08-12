@@ -1,8 +1,8 @@
 # importing necessary libraries
 from psychopy import visual, core
 import random
-import spidev
 import numpy
+import spidev
 
 # Open SPI bus
 spi = spidev.SpiDev()
@@ -24,15 +24,15 @@ def read_channel(channel):
   #return volts
 
 # analog channel
-light_channel = 0
+#light_channel = 0
 
 # Read the light sensor data
 #light_level = read_channel(light_channel)
 #light_volts = ConvertVolts(light_level,2)
 
 # create an array
-cordinates = numpy.array([])
-sampling_value = numpy.array([])
+qty = 30 #max dots
+cordinates = numpy.zeros((2, qty), dtype = int)
 
 #create a window
 mywin = visual.Window([800,600], monitor="testMonitor", units="deg")
@@ -40,44 +40,42 @@ mywin = visual.Window([800,600], monitor="testMonitor", units="deg")
 # setting the range of coordinates and how many coordinates to produce
 rangeX = (-7, 7)
 rangeY = (-7, 7)
-qty = 1
 
-frame = 7.5
-seconds_stim = 1
-frame_rate = int(mywin.getActualFrameRate())
+# setting up function to print random coordinates
+i = 0
+while i<qty:
+    x = random.randrange(*rangeX)
+    y = random.randrange(*rangeY)
+    cordinates[:,i] = [x,y]
+    i += 1
+numpy.savetxt('myCoordinates.csv', cordinates, delimiter=',', newline='\n')
 
-for i in range (30):
 
-    # setting up function to print random coordinates
-    cords = []
-    excluded = set()
-    i = 0
-    while i<qty:
-        x = random.randrange(*rangeX)
-        y = random.randrange(*rangeY)
-        if (x,y) in excluded: continue
-        cords.append((x,y))
-        i += 1
-    new_cords = numpy.append(cordinates, cords)
-    #print(new_cords)
+frame_rate = mywin.getActualFrameRate()
+frame_rpts = 15
+stim_per_rpt = 4 
+sampling_values = numpy.zeros((qty, frame_rpts * stim_per_rpt * 2), dtype = int)
 
-    for i in range (4):
-        # create some stimuli
-        fixation = visual.GratingStim(win=mywin, mask="circle", size=2, pos= cords, sf=0, rgb=-1)
-        inverse_fixation = visual.GratingStim(win=mywin, mask="circle", size=2, pos= cords, sf=0, rgb=0)
-
-        for frameN in range(frame_rate * seconds_stim):
-            if (frameN % (frame * 2)) >= frame:
-                fixation.draw()
-                new_sampling_values = numpy.append(sampling_value, read_channel(light_channel))
-            else:
-                inverse_fixation.draw()
-                new_sampling_values = numpy.append(sampling_value, read_channel(light_channel))
+for i in range (qty): # show all dots one after another
+    frame_count = 0
+    fixation = visual.GratingStim(win=mywin, mask="circle", size=2, pos= cordinates[:,i], sf=0, rgb=-1)
+    inverse_fixation = visual.GratingStim(win=mywin, mask="circle", size=2, pos= cordinates[:,i], sf=0, rgb=0)
+    
+    for j in range (frame_rpts): # 15 times should give us 2 sec of flicker  
+        # this next bit should take 1/60 * 8 sec, ie 7.5 Hz
+        for k in range (stim_per_rpt): # show each pattern for 4 frames; sample every frame
+            # create some stimuli
+            fixation.draw()
+            sampling_values [i, frame_count] = read_channel() 
+            frame_count = frame_count + 1
+            mywin.flip()
+        for k in range (stim_per_rpt): # now show the opposite frame
+            inverse_fixation.draw()
+            sampling_values [i, frame_count] = read_channel() 
+            frame_count = frame_count + 1
             mywin.flip()
 
 # close window
 mywin.close()
-core.quit()
             
-print(new_cords, file=open("cords.txt"))
-print(new_sampling_values, file=open("sampling.txt"))
+print ('Frame rate is ' + str(frame_rate))
