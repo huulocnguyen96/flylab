@@ -3,6 +3,10 @@ from psychopy import visual, core
 import random
 import numpy
 import platform
+import os
+
+from datetime import datetime
+Date = datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
 
 if "Darwin" in platform.system():
     def read_channel():
@@ -86,5 +90,8 @@ for i in range (qty): # show all dots one after another
 mywin.close()
 
 numpy.savetxt('myData.csv', sampling_values, delimiter=',', newline='\n')
+
+os.rename("myData.csv", "myData" + Date + ".csv")
+os.rename("myCoordinates.csv", "myCoordinates" + Date + ".csv")
 
 print ('Frame rate is ' + str(frame_rate))
