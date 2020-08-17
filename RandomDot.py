@@ -4,6 +4,8 @@ import random
 import numpy
 import platform
 import os
+import matplotlib.pyplot as plt
+import pdb
 
 if "Darwin" in platform.system():
     def read_channel():
@@ -41,7 +43,7 @@ Date = datetime.today().strftime('%Y-%m-%d-%H-%M-%S')
 #light_volts = ConvertVolts(light_level,2)
 
 # create an array
-qty = 30 #max dots
+qty = 3 #max dots
 cordinates = numpy.zeros((qty, 2), dtype = int)
 
 #create a window
@@ -124,3 +126,8 @@ os.rename("myCoordinates.csv", "myCoordinates" + Date + ".csv")
 
 print ('Frame rate is ' + str(frame_rate))
 print ('Expt time was ' + str(expt_time))
+
+pdb.set_trace()
+ 
+plt.plot( sampling_values [:,0], sampling_values [:,1], linestyle='solid', marker='None')
+plt.show()
