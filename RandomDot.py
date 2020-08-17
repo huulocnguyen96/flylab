@@ -8,8 +8,8 @@ import matplotlib.pyplot as plt
 import pdb
 
 if "Darwin" in platform.system():
-    def read_channel():
-      adc = random.randrange(1023)
+    def read_channel(x):
+      adc = x + random.randrange(1023)
       return adc
 else:
     import spidev
@@ -21,7 +21,7 @@ else:
 
     # Function to read SPI data from MCP3008 chip
     # Channel must be an integer 0-7
-    def read_channel():
+    def read_channel(x):
         channel = 0
         adc = spi.xfer2([1,(8+channel)<<4,0])
         data = ((adc[1]&3) << 8) + adc[2]
@@ -87,7 +87,7 @@ for i in range (qty): # show all dots one after another
         for k in range (stim_per_rpt): # show each pattern for 4 frames; sample every frame
             # create some stimuli
             fixation.draw()
-            sampling_values [frame_count, i+1] = read_channel()
+            sampling_values [frame_count, i+1] = read_channel(100)
             sampling_values [frame_count, 0] = 1000 * clock.getTime()
             frame_count = frame_count + 1
             timer.reset(0.00)
@@ -95,21 +95,21 @@ for i in range (qty): # show all dots one after another
                 while timer.getTime() < 0.0083:
                     myCount = myCount + 1
                 
-                sampling_values [frame_count, i+1] = read_channel()  
+                sampling_values [frame_count, i+1] = read_channel(100)  
                 sampling_values [frame_count, 0] = 1000 * clock.getTime() 
                 frame_count = frame_count + 1
                 timer.reset(0.00)
             mywin.flip()
         for k in range (stim_per_rpt): # now show the opposite frame
             inverse_fixation.draw()
-            sampling_values [frame_count, i+1] = read_channel()
+            sampling_values [frame_count, i+1] = read_channel(-100)
             sampling_values [frame_count, 0] = 1000 * clock.getTime()
             frame_count = frame_count + 1
             timer.reset(0.00)
             for l in range (extra_samples_per_frame):
                 while timer.getTime() < 0.0083:
                     myCount = myCount + 1
-                sampling_values [frame_count,i+1] = read_channel() 
+                sampling_values [frame_count,i+1] = read_channel(-100) 
                 sampling_values [frame_count, 0] = 1000 * clock.getTime() 
                 frame_count = frame_count + 1
                 timer.reset(0.00)
@@ -127,7 +127,19 @@ os.rename("myCoordinates.csv", "myCoordinates" + Date + ".csv")
 print ('Frame rate is ' + str(frame_rate))
 print ('Expt time was ' + str(expt_time))
 
-pdb.set_trace()
- 
+#matplotlib graph the raw data
 plt.plot( sampling_values [:,0], sampling_values [:,1], linestyle='solid', marker='None')
 plt.show()
+ 
+#do an FFT
+rate = 120. #rate of data collection in points per second
+ff = abs(numpy.fft.rfft(sampling_values [:,1]))
+fx = numpy.linspace(0, rate/2, len(ff)) 
+    
+plt.plot( fx[1:], ff[1:], linestyle='solid', marker='None')
+plt.show() 
+
+
+pdb.set_trace()
+
+
