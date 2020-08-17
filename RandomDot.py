@@ -34,7 +34,7 @@ else:
 
 # analog channel
 #light_channel = 0
-Date = datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
+Date = datetime.today().strftime('%Y-%m-%d-%H-%M-%S')
 
 # Read the light sensor data
 #light_level = read_channel(light_channel)
