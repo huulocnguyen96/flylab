@@ -67,7 +67,6 @@ while i<qty:
     y = random.randrange(*rangeY)
     cordinates[i, :] = [x,y]
     i += 1
-numpy.savetxt('myCoordinates.csv', cordinates, delimiter=',', newline='\n')
 
 myCount = 0
 frame_rate = mywin.getActualFrameRate()
@@ -121,8 +120,6 @@ mywin.close()
 
 numpy.savetxt('myData.csv', sampling_values, delimiter=',', fmt='%i', newline='\n')
 
-os.rename("myData.csv", "myData" + Date + ".csv")
-os.rename("myCoordinates.csv", "myCoordinates" + Date + ".csv")
 
 print ('Frame rate is ' + str(frame_rate))
 print ('Expt time was ' + str(expt_time))
@@ -142,10 +139,19 @@ plt.plot( fx[1:], ff[1:], linestyle='solid', marker='None')
 plt.show() 
 
 #ff[15,:] nicely gives the response at 7.5Hz (x2 scale factor)
+ff_2d = numpy.reshape(ff[15], (-1, qty))
+ff_2d_tr = numpy.transpose(ff_2d)
+coords_with_data = numpy.append(cordinates,ff_2d_tr, axis=1)
+numpy.savetxt('myCoordinates.csv', coords_with_data, delimiter=',', newline='\n')
+
 
 fall = numpy.insert(ff, 0, fx, axis=1)
 numpy.savetxt('myFFT.csv', fall, delimiter=',', newline='\n')
+
+#tidy up
 os.rename("myFFT.csv", "myFFT" + Date + ".csv")
+os.rename("myData.csv", "myData" + Date + ".csv")
+os.rename("myCoordinates.csv", "myCoordinates" + Date + ".csv")
 
 pdb.set_trace()
 
