@@ -125,8 +125,8 @@ print ('Frame rate is ' + str(frame_rate))
 print ('Expt time was ' + str(expt_time))
 
 #matplotlib graph the raw data
+plt.subplot(2, 2, 1) # (rows, columns, panel number)
 plt.plot( sampling_values [:,0], sampling_values [:,1], linestyle='solid', marker='None')
-plt.show()
  
 #do an FFT
 rate = 120. #rate of data collection in points per second
@@ -135,23 +135,31 @@ for i in range (qty):
     ff[:,i] = abs(numpy.fft.rfft(sampling_values [:,i+1]))
 fx = numpy.linspace(0, rate/2, len(ff)) 
     
+plt.subplot(2, 2, 2) # (rows, columns, panel number)
 plt.plot( fx[1:], ff[1:], linestyle='solid', marker='None')
-plt.show() 
+
 
 #ff[15,:] nicely gives the response at 7.5Hz (x2 scale factor)
 ff_2d = numpy.reshape(ff[15], (-1, qty))
 ff_2d_tr = numpy.transpose(ff_2d)
 coords_with_data = numpy.append(cordinates,ff_2d_tr, axis=1)
+
+plt.subplot(2, 2, 4) # (rows, columns, panel number)
+plt.scatter(coords_with_data[:, 0], coords_with_data[:, 1], c=coords_with_data[:, 2], s=100)
+
 numpy.savetxt('myCoordinates.csv', coords_with_data, delimiter=',', newline='\n')
 
-
+#merge x axis (frequency data) and y FFT data
 fall = numpy.insert(ff, 0, fx, axis=1)
 numpy.savetxt('myFFT.csv', fall, delimiter=',', newline='\n')
+
+plt.savefig ('myGraphic.PDF')
 
 #tidy up
 os.rename("myFFT.csv", "myFFT" + Date + ".csv")
 os.rename("myData.csv", "myData" + Date + ".csv")
 os.rename("myCoordinates.csv", "myCoordinates" + Date + ".csv")
+os.rename("myGraphic.PDF", "myGraphic" + Date + ".PDF")
 
 pdb.set_trace()
 
