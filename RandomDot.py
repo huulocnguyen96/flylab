@@ -43,7 +43,7 @@ Date = datetime.today().strftime('%Y-%m-%d-%H-%M-%S')
 #light_volts = ConvertVolts(light_level,2)
 
 # create an array
-qty = 3 #max dots
+qty = 15 #max dots
 cordinates = numpy.zeros((qty, 2), dtype = int)
 
 #create a window
@@ -59,7 +59,7 @@ rangeY = (-7, 7)
 
 frame = 7.5
 seconds_stim = 1
-frame_rate = int(mywin.getActualFrameRate())
+frame_rate = mywin.getActualFrameRate()
 
 i = 0
 while i<qty:
@@ -133,12 +133,19 @@ plt.show()
  
 #do an FFT
 rate = 120. #rate of data collection in points per second
-ff = abs(numpy.fft.rfft(sampling_values [:,1]))
+ff =  numpy.zeros((121,qty))
+for i in range (qty):
+    ff[:,i] = abs(numpy.fft.rfft(sampling_values [:,i+1]))
 fx = numpy.linspace(0, rate/2, len(ff)) 
     
 plt.plot( fx[1:], ff[1:], linestyle='solid', marker='None')
 plt.show() 
 
+#ff[15,:] nicely gives the response at 7.5Hz (x2 scale factor)
+
+fall = numpy.insert(ff, 0, fx, axis=1)
+numpy.savetxt('myFFT.csv', fall, delimiter=',', newline='\n')
+os.rename("myFFT.csv", "myFFT" + Date + ".csv")
 
 pdb.set_trace()
 
