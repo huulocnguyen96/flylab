@@ -6,6 +6,7 @@ import platform
 import os
 import matplotlib.pyplot as plt
 import pdb
+from datetime import datetime
 
 if "Darwin" in platform.system():
     def read_channel(x):
@@ -130,7 +131,7 @@ plt.plot( sampling_values [:,0], sampling_values [:,1], linestyle='solid', marke
  
 #do an FFT
 rate = 120. #rate of data collection in points per second
-ff =  numpy.zeros((121,qty))
+ff =  numpy.zeros((481*2+1,qty), dtype=float)
 for i in range (qty):
     ff[:,i] = abs(numpy.fft.rfft(sampling_values [:,i+1]))
 fx = numpy.linspace(0, rate/2, len(ff)) 
