@@ -144,10 +144,10 @@ ff_2d = numpy.reshape(ff[15], (-1, qty))
 ff_2d_tr = numpy.transpose(ff_2d)
 coords_with_data = numpy.append(cordinates, ff_2d_tr, axis=1)
 
-plt.subplot(2, 2, 4)  # (rows, columns, panel number)
-plt.scatter(coords_with_data[:, 0], coords_with_data[:, 1], c=coords_with_data[:, 2], s=100)
+#plt.subplot(2, 2, 4)  # (rows, columns, panel number)
+#plt.scatter(coords_with_data[:, 0], coords_with_data[:, 1], c=coords_with_data[:, 2], s=100)
 
-numpy.savetxt('myCoordinates.csv', coords_with_data, delimiter=',', newline='\n')
+#numpy.savetxt('myCoordinates.csv', coords_with_data, delimiter=',', newline='\n')
 
 # merge x axis (frequency data) and y FFT data
 fall = numpy.insert(ff, 0, fx, axis=1)
@@ -158,7 +158,7 @@ plt.savefig('myGraphic.PDF')
 # tidy up
 os.rename("myFFT.csv", "myFFT" + Date + ".csv")
 os.rename("myData.csv", "myData" + Date + ".csv")
-os.rename("myCoordinates.csv", "myCoordinates" + Date + ".csv")
+#os.rename("myCoordinates.csv", "myCoordinates" + Date + ".csv")
 os.rename("myGraphic.PDF", "myGraphic" + Date + ".PDF")
 
 pdb.set_trace()
