@@ -80,8 +80,8 @@ sampling_values = numpy.zeros(((1 + extra_samples_per_frame) * frame_rpts * stim
 for i in range(qty):  # show all dots one after another
     clock.reset(0.00)
     frame_count = 0
-    fixation = visual.GratingStim(win=mywin, mask="none", size=20, pos=[0,0], sf=1, contrast=1.0, phase=(0.0, 0.0))
-    inverse_fixation = visual.GratingStim(win=mywin, mask="none", size=20, pos=[0,0], sf=1, contrast=-1.0, phase=(0.0, 0.0))
+    fixation = visual.GratingStim(win=mywin, mask="none", size=20, pos=[0,0], sf=0.8, contrast=1.0, phase=(0.0, 0.0)) #sf = 0.2/0.4/0.8 gives 4/18/16 stripes
+    inverse_fixation = visual.GratingStim(win=mywin, mask="none", size=20, pos=[0,0], sf=0.8, contrast=-1.0, phase=(0.0, 0.0))
 
     for j in range(frame_rpts):  # 15 times should give us 2 sec of flicker
         # this next bit should take 1/60 * 8 sec, ie 7.5 Hz
@@ -144,10 +144,10 @@ ff_2d = numpy.reshape(ff[15], (-1, qty))
 ff_2d_tr = numpy.transpose(ff_2d)
 coords_with_data = numpy.append(cordinates, ff_2d_tr, axis=1)
 
-plt.subplot(2, 2, 4)  # (rows, columns, panel number)
-plt.scatter(coords_with_data[:, 0], coords_with_data[:, 1], c=coords_with_data[:, 2], s=100)
+#plt.subplot(2, 2, 4)  # (rows, columns, panel number)
+#plt.scatter(coords_with_data[:, 0], coords_with_data[:, 1], c=coords_with_data[:, 2], s=100)
 
-numpy.savetxt('myCoordinates.csv', coords_with_data, delimiter=',', newline='\n')
+#numpy.savetxt('myCoordinates.csv', coords_with_data, delimiter=',', newline='\n')
 
 # merge x axis (frequency data) and y FFT data
 fall = numpy.insert(ff, 0, fx, axis=1)
@@ -158,7 +158,7 @@ plt.savefig('myGraphic.PDF')
 # tidy up
 os.rename("myFFT.csv", "myFFT" + Date + ".csv")
 os.rename("myData.csv", "myData" + Date + ".csv")
-os.rename("myCoordinates.csv", "myCoordinates" + Date + ".csv")
+#os.rename("myCoordinates.csv", "myCoordinates" + Date + ".csv")
 os.rename("myGraphic.PDF", "myGraphic" + Date + ".PDF")
 
 pdb.set_trace()
