@@ -18,7 +18,7 @@ else:
     # Open SPI bus
     spi = spidev.SpiDev()
     spi.open(0, 0)
-    spi.max_speed_hz = 15600000
+    spi.max_speed_hz = 3900000
 
 
     # Function to read SPI data from MCP3008 chip
@@ -119,6 +119,9 @@ for i in range(qty):  # show all dots one after another
 expt_time = expt_clock.getTime()
 # close window
 mywin.close()
+pdb.set_trace()
+meanData = numpy.mean(sampling_values [:, 1:])
+sampling_values [:, 1:] = sampling_values [:, 1:] - meanData
 
 numpy.savetxt('myData.csv', sampling_values, delimiter=',', fmt='%i', newline='\n')
 
@@ -131,7 +134,7 @@ plt.plot(sampling_values[:, 0], sampling_values[:, 1], linestyle='solid', marker
 
 # do an FFT
 rate = 120.  # rate of data collection in points per second
-ff = numpy.zeros((481 * 2 + 1, qty), dtype=float)
+ff = numpy.zeros((121, qty), dtype=float)
 for i in range(qty):
     ff[:, i] = abs(numpy.fft.rfft(sampling_values[:, i + 1]))
 fx = numpy.linspace(0, rate / 2, len(ff))
